@@ -15,34 +15,35 @@ body{
   overflow:hidden;
 }
 
-/* Balanced layout: top / middle / bottom share space nicely */
+/* Grid layout keeps proportions consistent on BOTH desktop & mobile */
 .stage{
   height:100svh;
   padding:
     calc(env(safe-area-inset-top) + 12px)
     12px
     calc(env(safe-area-inset-bottom) + 14px);
-  display:flex;
-  flex-direction:column;
+  display:grid;
+  grid-template-rows: auto 1fr auto; /* top / middle / bottom */
+  justify-items:center;
   align-items:center;
-  justify-content:space-between; /* key: avoids bottom heaviness */
+  row-gap: clamp(10px, 2.0vh, 22px);
   text-align:center;
 }
 
-/* Small explicit spacers so the 3 blocks feel proportional */
 .logo{
   width:min(520px,88vw);
   height:auto;
-  margin-top:clamp(6px,1.2vh,14px);
 }
 
+/* --- Technology / Creativity block --- */
 .tc{
   width:min(840px,96vw);
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:clamp(10px,1.6vh,18px); /* tighter than before */
-  margin:clamp(8px,1.6vh,18px) 0;
+  gap: clamp(10px, 1.6vh, 18px);
+  align-self:stretch;
+  justify-self:center;
 }
 
 .tc-grid{
@@ -56,21 +57,18 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:clamp(6px,1.4vh,12px) clamp(10px,3vw,20px);
+  padding:clamp(6px, 1.4vh, 12px) clamp(10px, 3vw, 20px);
 }
 
-.tc-inner{
-  width:100%;
-  max-width:320px;
-}
+.tc-inner{ width:100%; max-width:320px; }
 
 .tc-title{
   font-weight:700;
   text-transform:uppercase;
   color:rgba(0,0,0,0.82);
   line-height:1.05;
-  font-size:clamp(19px,3.2vw,34px);
-  letter-spacing:clamp(0.06em,0.55vw,0.16em);
+  font-size:clamp(19px, 2.6vw, 34px);
+  letter-spacing:clamp(0.06em, 0.42vw, 0.16em);
 }
 
 .tc-sub{
@@ -78,7 +76,7 @@ body{
   font-weight:400;
   color:rgba(0,0,0,0.72);
   line-height:1.32;
-  font-size:clamp(13px,2.1vw,19px);
+  font-size:clamp(13px, 1.6vw, 19px);
   overflow-wrap:anywhere;
 }
 
@@ -87,7 +85,6 @@ body{
   flex-direction:column;
   align-items:center;
   gap:12px;
-  margin-top:clamp(0px,0.6vh,4px);
 }
 
 .tc-line{
@@ -100,46 +97,45 @@ body{
   font-weight:400;
   color:rgba(0,0,0,0.72);
   line-height:1.28;
-  font-size:clamp(15px,2.2vw,22px); /* slightly smaller => lighter bottom */
+  font-size:clamp(15px, 1.8vw, 22px);
 }
 
-/* Bottom group: slightly tighter & lifted */
+/* --- Bottom group: balanced, not heavy --- */
 .actions{
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:10px;
-  margin-bottom:clamp(6px,1.2vh,14px);
 }
 
 .cta{
   display:inline-flex;
   align-items:center;
   gap:12px;
-  padding:14px 20px; /* slightly smaller button */
+  padding:14px 20px;
   border-radius:999px;
   text-decoration:none;
   background:var(--black);
   color:rgba(255,255,255,0.95);
   box-shadow:0 16px 44px rgba(0,0,0,0.26);
-  transition:transform .18s ease,box-shadow .18s ease;
+  transition:transform .18s ease, box-shadow .18s ease;
 }
+.cta:hover{ transform:translateY(-2px); box-shadow:0 22px 64px rgba(0,0,0,0.32); }
 
-.cta:hover{transform:translateY(-2px);box-shadow:0 22px 64px rgba(0,0,0,0.32);}
-.cta-text{font-weight:700;letter-spacing:.14em;font-size:13px;}
+.cta-text{ font-weight:700; letter-spacing:.14em; font-size:13px; }
 .cta-dot{
   width:13px;height:13px;border-radius:999px;background:var(--blue);
-  box-shadow:0 0 0 1px rgba(255,255,255,0.12),0 10px 30px rgba(0,0,255,0.28);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.12), 0 10px 30px rgba(0,0,255,0.28);
 }
 
-.contact{font-size:13px;}
+.contact{ font-size:13px; }
 .contact a{
   color:rgba(0,0,0,0.78);
   text-decoration:none;
   border-bottom:1px solid rgba(0,0,0,0.22);
   padding-bottom:2px;
 }
-.contact a:hover{border-color:rgba(0,0,0,0.55);}
+.contact a:hover{ border-color:rgba(0,0,0,0.55); }
 
 .micro{
   font-size:11.5px;
@@ -147,8 +143,8 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Very small screens: keep things airy without pushing bottom */
+/* Very small screens: keep readability */
 @media (max-width:390px){
-  .tc-inner{max-width:280px;}
-  .tc-title{font-size:clamp(18px,5.2vw,28px);letter-spacing:.06em;}
+  .tc-inner{ max-width:280px; }
+  .tc-title{ font-size:clamp(18px, 5.0vw, 28px); letter-spacing:.06em; }
 }

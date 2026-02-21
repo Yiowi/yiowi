@@ -1,3 +1,4 @@
+// Gentle fallback for browsers blocking autoplay
 document.addEventListener("DOMContentLoaded", () => {
   const v = document.querySelector("video.bgvideo");
   if (!v) return;

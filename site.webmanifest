@@ -1,0 +1,11 @@
+{
+  "name": "Yiowi",
+  "short_name": "Yiowi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050826",
+  "theme_color": "#050826",
+  "icons": [
+    { "src": "/assets/favicon.ico", "sizes": "64x64", "type": "image/x-icon" }
+  ]
+}

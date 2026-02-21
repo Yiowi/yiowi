@@ -7,11 +7,15 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
+
 body{
   margin:0;
   font-family: "Manrope", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   overflow-x:hidden;
+  background: linear-gradient(90deg, var(--left) 0 50%, var(--right) 50% 100%);
 }
+
+.page{ min-height:100vh; }
 
 .top{
   display:flex;
@@ -36,12 +40,11 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  background: transparent; /* so the split background is continuous behind logo too */
 }
 
-.left{ background: var(--left); }
-.right{ background: var(--right); }
-
 .word-wrap{ width: min(720px, 92%); }
+
 .word{
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -53,17 +56,6 @@ body{
 
 .left .word{ text-align:right; padding-right: clamp(16px, 3vw, 36px); }
 .right .word{ text-align:left; padding-left: clamp(16px, 3vw, 36px); }
-
-.seam{
-  position:absolute;
-  left:50%;
-  top:0;
-  transform:translateX(-50%);
-  width:2px;
-  height:100%;
-  background: rgba(0,0,0,0.55);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 0 24px rgba(0,0,255,0.22);
-}
 
 .cta-wrap{
   position:absolute;
@@ -96,15 +88,17 @@ body{
 .cta-dot{ width:14px; height:14px; border-radius:999px; background: var(--blue);
   box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 10px 30px rgba(0,0,255,0.30); }
 
-.contact{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; }
+.contact{ font-size:14px; }
 .contact a{ color: rgba(0,0,0,0.78); text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.22); padding-bottom:2px; }
 .contact a:hover{ border-color: rgba(0,0,0,0.55); }
-.sep{ color: rgba(0,0,0,0.35); }
+
 .micro{ font-size:12px; letter-spacing:.06em; color: rgba(0,0,0,0.55); text-align:center; }
 
 @media (max-width: 720px){
+  body{
+    background: linear-gradient(180deg, var(--left) 0 50%, var(--right) 50% 100%);
+  }
   .hero{ height:auto; min-height: calc(100vh - 92px); flex-direction: column; }
-  .seam{ left:0; top:50%; transform:none; width:100%; height:2px; }
   .left .word, .right .word{ text-align:center; padding: 0 12px; }
   .cta-wrap{ position:relative; left:auto; bottom:auto; transform:none; padding: 18px 0 26px; }
 }

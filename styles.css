@@ -1,76 +1,65 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-body {
+body{
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+.hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
-.split {
-  display: flex;
-  flex: 1;
+.split{
+  display:grid;
+  grid-template-columns:1fr 1fr; /* Always split */
+  flex:1;
 }
 
-/* Each half */
-.side {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  overflow: hidden;
+.half{
+  min-width:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:60px 20px;
 }
 
-.left {
-  background: #8fb3c9;
+.tech{
+  background:#8fb3c9;
 }
 
-.right {
-  background: #e5a843;
+.creativity{
+  background:#e5a843;
 }
 
-.content {
-  max-width: 320px;
+.inner{
+  max-width:320px;
 }
 
-h2 {
-  font-size: clamp(22px, 3vw, 34px);
-  letter-spacing: 2px;
-  margin-bottom: 15px;
+h2{
+  letter-spacing:2px;
+  margin-bottom:15px;
 }
 
-p {
-  font-size: clamp(16px, 2.2vw, 20px);
-  line-height: 1.4;
+p{
+  line-height:1.5;
 }
 
-/* Center bridge message */
-.center-message {
-  text-align: center;
-  padding: 40px 20px 80px;
-  background: white;
+.bridge{
+  background:#ffffff;
+  text-align:center;
+  padding:60px 20px;
 }
 
-.divider {
-  width: 60px;
-  height: 2px;
-  background: black;
-  margin: 0 auto 20px;
-}
-
-/* Mobile stacking */
-@media (max-width: 768px) {
-  .split {
-    flex-direction: column;
-  }
+.line{
+  width:60px;
+  height:2px;
+  background:black;
+  margin:0 auto 20px;
 }

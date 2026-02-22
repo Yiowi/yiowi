@@ -7,7 +7,7 @@
 
   <link rel="icon" href="/assets/favicon.ico" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-  <!-- Manifest omitted to avoid Chrome "Install app" -->
+  <!-- Manifest intentionally omitted to avoid Chrome "Install app" -->
 
   <link rel="stylesheet" href="/styles.css" />
 
@@ -17,13 +17,11 @@
 </head>
 
 <body>
-  <main class="hero" aria-label="Yiowi">
+  <main class="hero" aria-label="Yiowi landing">
     <!-- 1) Logo -->
     <header class="hero__logo" aria-label="Brand">
       <img class="logo" src="/assets/logo.svg" alt="Yiowi — Hybrid Intelligence Studio" />
     </header>
-
-    <div class="spacer" aria-hidden="true"></div>
 
     <!-- 2) Story -->
     <section class="hero__story tc" aria-label="Technology and Creativity">
@@ -41,16 +39,17 @@
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="tc__bridge" aria-label="Bridge statement">
-        <div class="tc__line" aria-hidden="true"></div>
-        <div class="tc__bridgeText">Separate strengths.<br />Combined advantage.</div>
+    <!-- 3) Bridge -->
+    <section class="hero__bridge" aria-label="Bridge statement">
+      <div class="bridge">
+        <div class="bridge__line" aria-hidden="true"></div>
+        <div class="bridge__text">Separate strengths.<br />Combined advantage.</div>
       </div>
     </section>
 
-    <div class="spacer spacer--mid" aria-hidden="true"></div>
-
-    <!-- 3) CTA -->
+    <!-- 4) CTA -->
     <section class="hero__cta" aria-label="Start">
       <a class="cta" href="https://wa.me/35799776169" target="_blank" rel="noopener">
         <span class="cta__text">START HERE</span>
@@ -58,9 +57,7 @@
       </a>
     </section>
 
-    <div class="spacer" aria-hidden="true"></div>
-
-    <!-- 4) Footer -->
+    <!-- 5) Footer -->
     <footer class="hero__meta" aria-label="Contact">
       <div class="contact"><a href="mailto:yo@yiowi.com">yo@yiowi.com</a></div>
       <div class="micro">Limassol, Cyprus — operating globally.</div>

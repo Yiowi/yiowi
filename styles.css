@@ -10,13 +10,17 @@
   --pad-x: 14px;
   --pad-y: 12px;
 
-  /* Equal spacing blocks (min gap + flexible remainder) */
-  --gap: clamp(10px, 2.2vh, 34px);
+  /* Equal spacing between the 4 areas (spacers) */
+  --gap: clamp(14px, 3.2vh, 52px);
+  --gap-mid: clamp(18px, 4.0vh, 68px); /* tiny bit bigger, prevents CTA crowding */
 
-  /* Typography */
-  --title: clamp(18px, 2.25vw, 34px);
-  --support: clamp(13px, 1.45vw, 20px);
-  --meta: clamp(11px, 1.0vw, 13px);
+  /* Sizing */
+  --logo-w: clamp(300px, 56vw, 620px);
+  --logo-maxh: 34vh;
+
+  --title: clamp(18px, 2.35vw, 36px);
+  --support: clamp(14px, 1.55vw, 21px);
+  --meta: clamp(12px, 1.05vw, 14px);
 }
 
 *{box-sizing:border-box}
@@ -33,37 +37,37 @@ body{
   overflow:hidden; /* no scroll */
 }
 
-/* Key change:
-   - CSS Grid with 4 content rows + 3 identical spacer rows
-   - Content sizes are constrained by viewport height (vh) so footer never gets pushed off-screen.
-*/
+/* Best practice for “even spacing”:
+   - Use real spacer elements with flex: 1
+   - Each spacer has a minimum height, then shares remaining space equally
+   This prevents the grid “random looking” distribution on tall screens. */
 .hero{
-  height:100dvh;
+  min-height:100dvh;
   padding:
     calc(env(safe-area-inset-top) + var(--pad-y))
     var(--pad-x)
     calc(env(safe-area-inset-bottom) + var(--pad-y));
-  display:grid;
 
-  grid-template-rows:
-    auto
-    minmax(var(--gap), 1fr)
-    auto
-    minmax(var(--gap), 1fr)
-    auto
-    minmax(var(--gap), 1fr)
-    auto;
-
-  justify-items:center;
+  display:flex;
+  flex-direction:column;
   align-items:center;
   text-align:center;
   min-width:0;
 }
 
-/* Logo scales by BOTH width and height (prevents it from eating footer space on short viewports) */
+.spacer{
+  flex:1;
+  min-height: var(--gap);
+}
+.spacer--mid{
+  min-height: var(--gap-mid);
+}
+
+/* Logo */
 .logo{
-  width: min(560px, 52vw, 46vh);
-  max-height: 28vh;
+  width: var(--logo-w);
+  max-width: 96vw;
+  max-height: var(--logo-maxh);
   height:auto;
   display:block;
 }
@@ -74,7 +78,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: clamp(10px, 1.8vh, 18px);
+  gap: clamp(12px, 2.0vh, 20px);
 }
 
 .tc__grid{
@@ -88,7 +92,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding: clamp(6px, 1.0vh, 12px) clamp(10px, 2.2vw, 20px);
+  padding: clamp(6px, 1.1vh, 12px) clamp(10px, 2.6vw, 22px);
 }
 
 .tc__inner{
@@ -105,14 +109,14 @@ body{
   text-transform:uppercase;
   line-height:1.05;
   font-size:var(--title);
-  letter-spacing:clamp(0.06em, 0.36vw, 0.14em);
+  letter-spacing:clamp(0.06em, 0.40vw, 0.16em);
   color:rgba(0,0,0,0.82);
 }
 
 .tc__sub{
-  margin-top:8px;
+  margin-top:10px;
   font-weight:400;
-  line-height:1.22;
+  line-height:1.25;
   font-size:var(--support);
   color:rgba(0,0,0,0.72);
   overflow-wrap:anywhere;
@@ -122,14 +126,12 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
+  gap:12px;
 }
-
 .tc__line{ width:64px; height:2px; background:rgba(0,0,0,0.85); }
-
 .tc__bridgeText{
   font-weight:400;
-  line-height:1.22;
+  line-height:1.25;
   font-size:var(--support);
   color:rgba(0,0,0,0.72);
 }
@@ -139,21 +141,17 @@ body{
   display:inline-flex;
   align-items:center;
   gap:12px;
-  padding: clamp(11px, 1.5vh, 15px) clamp(18px, 2.2vw, 24px);
+  padding: clamp(12px, 1.6vh, 16px) clamp(18px, 2.4vw, 24px);
   border-radius:999px;
   text-decoration:none;
   background:var(--black);
   color:rgba(255,255,255,0.95);
   box-shadow:0 18px 55px rgba(0,0,0,0.28);
 }
-.cta__text{
-  font-weight:700;
-  letter-spacing:.14em;
-  font-size:clamp(12px, 1.0vw, 14px);
-}
+.cta__text{ font-weight:700; letter-spacing:.14em; font-size:clamp(12px, 1.05vw, 14px); }
 .cta__dot{
-  width:clamp(12px, 1.1vw, 14px);
-  height:clamp(12px, 1.1vw, 14px);
+  width:clamp(12px, 1.2vw, 14px);
+  height:clamp(12px, 1.2vw, 14px);
   border-radius:999px;
   background:var(--blue);
 }
@@ -162,10 +160,9 @@ body{
 .hero__meta{
   display:flex;
   flex-direction:column;
-  gap:8px;
+  gap:10px;
   align-items:center;
 }
-
 .contact{ font-size:var(--meta); }
 .contact a{
   color:rgba(0,0,0,0.78);
@@ -179,22 +176,27 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Extra short viewports: reduce logo height cap + gaps to ensure footer stays visible */
-@media (max-height: 720px){
+/* Short screens: reduce logo + gaps so everything remains visible with no overlap */
+@media (max-height: 760px){
   :root{
     --pad-y: 8px;
-    --gap: clamp(8px, 1.6vh, 18px);
-    --support: clamp(12px, 1.2vw, 18px);
-    --meta: clamp(10px, 0.95vw, 12px);
+    --gap: clamp(10px, 2.0vh, 22px);
+    --gap-mid: clamp(12px, 2.6vh, 30px);
+
+    --logo-w: clamp(250px, 50vw, 520px);
+    --logo-maxh: 28vh;
+
+    --support: clamp(12px, 1.25vw, 18px);
+    --meta: clamp(11px, 1.0vw, 12px);
   }
-  .logo{ width: min(520px, 50vw, 42vh); max-height: 24vh; }
+  .tc{ gap: 12px; }
+  .tc__sub{ margin-top:8px; }
 }
 
-@media (max-height: 640px){
+@media (max-height: 680px){
   :root{
-    --gap: clamp(6px, 1.2vh, 14px);
+    --gap: clamp(8px, 1.6vh, 18px);
+    --gap-mid: clamp(10px, 2.0vh, 24px);
+    --logo-maxh: 24vh;
   }
-  .logo{ width: min(480px, 48vw, 38vh); max-height: 22vh; }
-  .tc{ gap: 10px; }
-  .tc__bridge{ gap: 8px; }
 }

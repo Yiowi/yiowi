@@ -4,18 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Yiowi — Hybrid Intelligence Studio</title>
-  <link rel="stylesheet" href="styles.css" />
+
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <!-- Manifest intentionally omitted to avoid Chrome "Install app" -->
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>
-  <main class="hero">
 
-    <header class="hero__logo">
-      <img class="logo" src="assets/logo.svg" alt="Yiowi — Hybrid Intelligence Studio" />
+<body>
+  <main class="hero" aria-label="Yiowi landing">
+    <!-- 1) Logo -->
+    <header class="hero__logo" aria-label="Brand">
+      <img class="logo" src="/assets/logo.svg" alt="Yiowi — Hybrid Intelligence Studio" />
     </header>
 
-    <section class="hero__story tc">
-      <div class="tc__grid">
+    <!-- 2) Story -->
+    <section class="hero__story tc" aria-label="Technology and Creativity">
+      <div class="tc__grid" role="presentation">
         <div class="tc__half">
           <div class="tc__inner">
             <div class="tc__title">TECHNOLOGY</div>
@@ -31,25 +41,27 @@
       </div>
     </section>
 
-    <section class="hero__bridge">
+    <!-- 3) Bridge -->
+    <section class="hero__bridge" aria-label="Bridge statement">
       <div class="bridge">
-        <div class="bridge__line"></div>
+        <div class="bridge__line" aria-hidden="true"></div>
         <div class="bridge__text">Separate strengths.<br />Combined advantage.</div>
       </div>
     </section>
 
-    <section class="hero__cta">
-      <a class="cta" href="#">
+    <!-- 4) CTA -->
+    <section class="hero__cta" aria-label="Start">
+      <a class="cta" href="https://wa.me/35799776169" target="_blank" rel="noopener">
         <span class="cta__text">START HERE</span>
-        <span class="cta__dot"></span>
+        <span class="cta__dot" aria-hidden="true"></span>
       </a>
     </section>
 
-    <footer class="hero__meta">
+    <!-- 5) Footer -->
+    <footer class="hero__meta" aria-label="Contact">
       <div class="contact"><a href="mailto:yo@yiowi.com">yo@yiowi.com</a></div>
       <div class="micro">Limassol, Cyprus — operating globally.</div>
     </footer>
-
   </main>
 </body>
 </html>

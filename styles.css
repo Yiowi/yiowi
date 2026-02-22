@@ -6,20 +6,17 @@
   --black:#000;
   --blue:#00f;
 
-  /* Page padding */
+  /* Padding */
   --pad-x: 14px;
-  --pad-top: 10px;
-  --pad-bot: 14px;
+  --pad-y: 12px;
 
-  /* “Even” spacing baseline */
-  --gap: clamp(18px, 3.4vh, 52px);
-  --cta-sep: clamp(20px, 4.0vh, 64px);
+  /* Equal spacing blocks (min gap + flexible remainder) */
+  --gap: clamp(10px, 2.2vh, 34px);
 
-  /* Sizing */
-  --logo-w: clamp(280px, 52vw, 560px);
-  --title: clamp(18px, 2.35vw, 36px);
-  --support: clamp(14px, 1.55vw, 21px);
-  --meta: clamp(12px, 1.05vw, 14px);
+  /* Typography */
+  --title: clamp(18px, 2.25vw, 34px);
+  --support: clamp(13px, 1.45vw, 20px);
+  --meta: clamp(11px, 1.0vw, 13px);
 }
 
 *{box-sizing:border-box}
@@ -33,33 +30,43 @@ body{
     var(--left) 0 var(--split-x),
     var(--right) var(--split-x) 100%
   );
-  overflow:hidden; /* no scrolling */
+  overflow:hidden; /* no scroll */
 }
 
-/* Best-practice layout for your requirement:
-   - Flex column with space-between to anchor logo & footer
-   - Controlled gaps so all 4 blocks feel evenly spaced
-   - Extra separation between story and CTA to guarantee no overlap
+/* Key change:
+   - CSS Grid with 4 content rows + 3 identical spacer rows
+   - Content sizes are constrained by viewport height (vh) so footer never gets pushed off-screen.
 */
 .hero{
   height:100dvh;
   padding:
-    calc(env(safe-area-inset-top) + var(--pad-top))
+    calc(env(safe-area-inset-top) + var(--pad-y))
     var(--pad-x)
-    calc(env(safe-area-inset-bottom) + var(--pad-bot));
+    calc(env(safe-area-inset-bottom) + var(--pad-y));
+  display:grid;
 
-  display:flex;
-  flex-direction:column;
+  grid-template-rows:
+    auto
+    minmax(var(--gap), 1fr)
+    auto
+    minmax(var(--gap), 1fr)
+    auto
+    minmax(var(--gap), 1fr)
+    auto;
+
+  justify-items:center;
   align-items:center;
-  justify-content:space-between;
   text-align:center;
-
-  /* ensures consistent spacing even when space-between expands */
-  gap: var(--gap);
   min-width:0;
 }
 
-.logo{ width:var(--logo-w); height:auto; display:block; }
+/* Logo scales by BOTH width and height (prevents it from eating footer space on short viewports) */
+.logo{
+  width: min(560px, 52vw, 46vh);
+  max-height: 28vh;
+  height:auto;
+  display:block;
+}
 
 /* STORY */
 .tc{
@@ -67,7 +74,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: clamp(12px, 2.0vh, 20px);
+  gap: clamp(10px, 1.8vh, 18px);
 }
 
 .tc__grid{
@@ -81,7 +88,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding: clamp(6px, 1.1vh, 12px) clamp(10px, 2.6vw, 22px);
+  padding: clamp(6px, 1.0vh, 12px) clamp(10px, 2.2vw, 20px);
 }
 
 .tc__inner{
@@ -98,14 +105,14 @@ body{
   text-transform:uppercase;
   line-height:1.05;
   font-size:var(--title);
-  letter-spacing:clamp(0.06em, 0.40vw, 0.16em);
+  letter-spacing:clamp(0.06em, 0.36vw, 0.14em);
   color:rgba(0,0,0,0.82);
 }
 
 .tc__sub{
-  margin-top:10px;
+  margin-top:8px;
   font-weight:400;
-  line-height:1.25;
+  line-height:1.22;
   font-size:var(--support);
   color:rgba(0,0,0,0.72);
   overflow-wrap:anywhere;
@@ -115,35 +122,38 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
 .tc__line{ width:64px; height:2px; background:rgba(0,0,0,0.85); }
+
 .tc__bridgeText{
   font-weight:400;
-  line-height:1.25;
+  line-height:1.22;
   font-size:var(--support);
   color:rgba(0,0,0,0.72);
 }
 
-/* CTA: force breathing room above it so it never touches the bridge */
-.hero__cta{ margin-top: var(--cta-sep); }
-
+/* CTA */
 .cta{
   display:inline-flex;
   align-items:center;
   gap:12px;
-  padding: clamp(12px, 1.6vh, 16px) clamp(18px, 2.4vw, 24px);
+  padding: clamp(11px, 1.5vh, 15px) clamp(18px, 2.2vw, 24px);
   border-radius:999px;
   text-decoration:none;
   background:var(--black);
   color:rgba(255,255,255,0.95);
   box-shadow:0 18px 55px rgba(0,0,0,0.28);
 }
-.cta__text{ font-weight:700; letter-spacing:.14em; font-size:clamp(12px, 1.05vw, 14px); }
+.cta__text{
+  font-weight:700;
+  letter-spacing:.14em;
+  font-size:clamp(12px, 1.0vw, 14px);
+}
 .cta__dot{
-  width:clamp(12px, 1.2vw, 14px);
-  height:clamp(12px, 1.2vw, 14px);
+  width:clamp(12px, 1.1vw, 14px);
+  height:clamp(12px, 1.1vw, 14px);
   border-radius:999px;
   background:var(--blue);
 }
@@ -152,10 +162,10 @@ body{
 .hero__meta{
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
   align-items:center;
-  padding-bottom: 2px;
 }
+
 .contact{ font-size:var(--meta); }
 .contact a{
   color:rgba(0,0,0,0.78);
@@ -169,27 +179,22 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Short screens: reduce sizes + reduce CTA separation so footer stays in view */
-@media (max-height: 760px){
+/* Extra short viewports: reduce logo height cap + gaps to ensure footer stays visible */
+@media (max-height: 720px){
   :root{
-    --logo-w: clamp(240px, 46vw, 500px);
-    --support: clamp(12px, 1.25vw, 18px);
-    --meta: clamp(11px, 1.0vw, 12px);
-
-    --gap: clamp(12px, 2.2vh, 26px);
-    --cta-sep: clamp(12px, 2.8vh, 32px);
-
-    --pad-top: 6px;
-    --pad-bot: 10px;
+    --pad-y: 8px;
+    --gap: clamp(8px, 1.6vh, 18px);
+    --support: clamp(12px, 1.2vw, 18px);
+    --meta: clamp(10px, 0.95vw, 12px);
   }
-  .tc{ gap: 12px; }
-  .tc__sub{ margin-top:8px; }
+  .logo{ width: min(520px, 50vw, 42vh); max-height: 24vh; }
 }
 
-@media (max-height: 680px){
+@media (max-height: 640px){
   :root{
-    --logo-w: clamp(220px, 42vw, 460px);
-    --gap: clamp(10px, 1.8vh, 20px);
-    --cta-sep: clamp(8px, 2.2vh, 24px);
+    --gap: clamp(6px, 1.2vh, 14px);
   }
+  .logo{ width: min(480px, 48vw, 38vh); max-height: 22vh; }
+  .tc{ gap: 10px; }
+  .tc__bridge{ gap: 8px; }
 }

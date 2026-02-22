@@ -11,7 +11,11 @@
   /* Layout */
   --pad-x: 14px;
   --pad-y: 12px;
-  --gap: clamp(14px, 3.2vh, 44px);
+
+  /* Three spacer rows (middle is larger to prevent any overlap with CTA) */
+  --gap-top: clamp(14px, 3.0vh, 40px);
+  --gap-mid: clamp(28px, 5.2vh, 84px);
+  --gap-bot: clamp(14px, 3.0vh, 40px);
 
   /* Type + logo sizing */
   --logo-w: clamp(280px, 52vw, 560px);
@@ -34,8 +38,11 @@ body{
   overflow:hidden; /* no scrolling */
 }
 
-/* Clean, predictable spacing:
-   4 content blocks with 3 equal "spacer" rows */
+/* Best-practice responsive layout:
+   - 4 semantic blocks
+   - 3 spacer rows with minimum heights (prevents collisions)
+   - centered alignment
+*/
 .hero{
   height:100dvh;
   padding:
@@ -46,11 +53,11 @@ body{
   display:grid;
   grid-template-rows:
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-top), 1fr)
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-mid), 1fr)
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-bot), 1fr)
     auto;
 
   justify-items:center;
@@ -135,7 +142,11 @@ body{
   color:rgba(0,0,0,0.72);
 }
 
-/* CTA */
+/* CTA
+   Extra safety: ensure CTA never visually touches the story even if fonts render slightly differently
+*/
+.hero__cta{ padding-top: clamp(6px, 1.2vh, 14px); }
+
 .cta{
   display:inline-flex;
   align-items:center;
@@ -183,13 +194,17 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Guard rails for short screens: shrink BEFORE any overflow */
+/* Guard rails for short screens: shrink BEFORE overflow */
 @media (max-height: 760px){
   :root{
     --logo-w: clamp(240px, 46vw, 500px);
     --support: clamp(12px, 1.25vw, 18px);
     --meta: clamp(11px, 1.0vw, 12px);
-    --gap: clamp(10px, 2.0vh, 24px);
+
+    --gap-top: clamp(10px, 2.0vh, 24px);
+    --gap-mid: clamp(18px, 3.6vh, 52px);
+    --gap-bot: clamp(10px, 2.0vh, 24px);
+
     --pad-y: 8px;
   }
   .tc{ gap: 12px; }
@@ -199,6 +214,6 @@ body{
 @media (max-height: 680px){
   :root{
     --logo-w: clamp(220px, 42vw, 460px);
-    --gap: clamp(8px, 1.6vh, 18px);
+    --gap-mid: clamp(14px, 3.0vh, 44px);
   }
 }

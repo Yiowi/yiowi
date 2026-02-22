@@ -1,9 +1,17 @@
 (() => {
   const show = () => { document.documentElement.style.visibility = 'visible'; };
+  const root = document.documentElement;
+
   const setSplit = (percent) => {
     if (!Number.isFinite(percent)) return;
     const p = Math.max(0, Math.min(100, percent));
-    document.documentElement.style.setProperty('--split-x', p.toFixed(4) + '%');
+    root.style.setProperty('--split-x', p.toFixed(4) + '%');
+  };
+
+  const setScale = (scale) => {
+    if (!Number.isFinite(scale)) return;
+    const s = Math.max(0.82, Math.min(1, scale)); // don't over-shrink
+    root.style.setProperty('--hero-scale', s.toFixed(4));
   };
 
   const rgbToHsv = (r,g,b) => {
@@ -24,7 +32,7 @@
     return [h,s,v];
   };
 
-  const computeSplitPercent = async (logo) => {
+  const computeBlueCenterPercent = async (logo) => {
     const src = logo.getAttribute('src');
     const res = await fetch(src, { cache: 'force-cache' });
     const blob = await res.blob();
@@ -48,7 +56,6 @@
 
     const data = ctx.getImageData(0,0,cw,ch).data;
 
-    // Detect saturated blue region using HSV (robust across SVG variations)
     let sumX = 0, sumW = 0;
     const step = 2;
     for (let y=0; y<ch; y+=step){
@@ -58,6 +65,7 @@
         const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
         if (a < 60) continue;
         const [h,s,v] = rgbToHsv(r,g,b);
+        // saturated blue region
         if (h >= 200 && h <= 260 && s >= 0.35 && v >= 0.25){
           const weight = (a/255) * s * v;
           sumX += x * weight;
@@ -74,40 +82,62 @@
     return (centerXViewport / window.innerWidth) * 100;
   };
 
-  const align = async () => {
+  const fitToViewport = () => {
+    const scaleWrap = document.getElementById('heroScale');
+    if (!scaleWrap) return 1;
+    // Temporarily set scale 1 for measurement
+    root.style.setProperty('--hero-scale', '1');
+
+    const h = scaleWrap.scrollHeight;
+    const avail = scaleWrap.clientHeight;
+    if (!h || !avail) return 1;
+
+    // If content taller than available, scale down
+    if (h > avail) return avail / h;
+    return 1;
+  };
+
+  const init = async () => {
     try {
       await new Promise(requestAnimationFrame);
+
+      // 1) Scale to avoid overlap / scroll
+      setScale(fitToViewport());
+
+      // 2) Now compute split based on final scale/layout
       const logo = document.getElementById('yiowiLogo');
       if (!logo) return;
+
       if (!logo.complete) {
         await new Promise((ok)=>{ logo.addEventListener('load', ok, {once:true}); logo.addEventListener('error', ok, {once:true}); });
       }
-      const percent = await computeSplitPercent(logo);
-      if (percent != null) setSplit(percent);
+      const p = await computeBlueCenterPercent(logo);
+      if (p != null) setSplit(p);
     } catch(_) {
-      // keep default
+      // keep defaults
     } finally {
       show();
     }
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', align, { once:true });
+    document.addEventListener('DOMContentLoaded', init, { once:true });
   } else {
-    align();
+    init();
   }
 
-  // Update on resize (no hide)
+  // Refit on resize/orientation
   let t;
   window.addEventListener('resize', () => {
     clearTimeout(t);
     t = setTimeout(async () => {
       try{
+        setScale(fitToViewport());
         const logo = document.getElementById('yiowiLogo');
         if (!logo || !logo.getBoundingClientRect().width) return;
-        const percent = await computeSplitPercent(logo);
-        if (percent != null) setSplit(percent);
-      }catch(_){}
+        const p = await computeBlueCenterPercent(logo);
+        if (p != null) setSplit(p);
+      } catch(_) {}
     }, 180);
   }, { passive:true });
 })();

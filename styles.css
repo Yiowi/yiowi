@@ -5,22 +5,19 @@
   --blue:#00f;
 
   --split-x: 50%;
+  --hero-scale: 1;
 
-  /* No-scroll fullscreen */
+  /* Visual sizing (still used; scale kicks in only when needed) */
   --pad-x: 14px;
   --pad-top: 12px;
   --pad-bot: 12px;
 
-  /* Sizing */
   --logo-w: clamp(280px, 54vw, 520px);
   --title: clamp(18px, 2.2vw, 34px);
   --support: clamp(14px, 1.5vw, 20px);
   --meta: clamp(12px, 1.1vw, 14px);
 
-  /* 3 gaps (make story->CTA bigger to avoid overlap) */
-  --gap-1: clamp(14px, 2.4vh, 32px); /* logo -> story */
-  --gap-2: clamp(24px, 3.6vh, 48px); /* story -> cta */
-  --gap-3: clamp(14px, 2.4vh, 32px); /* cta -> footer */
+  --gap: clamp(14px, 2.6vh, 36px);
 }
 
 *{box-sizing:border-box}
@@ -30,11 +27,13 @@ body{
   margin:0;
   font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
   color:#000;
+
   background: linear-gradient(90deg,
     var(--left) 0 var(--split-x),
     var(--right) var(--split-x) 100%
   );
-  overflow:hidden;
+
+  overflow:hidden; /* requirement: no scroll */
 }
 
 .hero{
@@ -44,20 +43,30 @@ body{
     var(--pad-x)
     calc(env(safe-area-inset-bottom) + var(--pad-bot));
   display:grid;
+  place-items:center;
+}
+
+/* This wrapper gets scaled down if needed to avoid overlap / scrolling */
+.hero__scale{
+  width:100%;
+  height:100%;
+  display:grid;
 
   grid-template-rows:
     auto
-    minmax(var(--gap-1), 1fr)
+    minmax(var(--gap), 1fr)
     auto
-    minmax(var(--gap-2), 1fr)
+    minmax(var(--gap), 1fr)
     auto
-    minmax(var(--gap-3), 1fr)
+    minmax(var(--gap), 1fr)
     auto;
 
   justify-items:center;
   align-items:center;
   text-align:center;
-  min-width:0;
+
+  transform: scale(var(--hero-scale));
+  transform-origin: center top;
 }
 
 .logo{ width:var(--logo-w); height:auto; }
@@ -110,7 +119,6 @@ body{
   flex-direction:column;
   align-items:center;
   gap:10px;
-  padding-bottom: 2px;
 }
 
 .tc__line{ width:64px; height:2px; background:rgba(0,0,0,0.85); }
@@ -133,7 +141,6 @@ body{
   background:var(--black);
   color:rgba(255,255,255,0.95);
   box-shadow:0 16px 48px rgba(0,0,0,0.26);
-  flex-shrink:0;
 }
 .cta__text{ font-weight:700; letter-spacing:.14em; font-size:clamp(12px, 1.0vw, 14px); }
 .cta__dot{
@@ -163,24 +170,4 @@ body{
   font-size:var(--meta);
   letter-spacing:.06em;
   color:rgba(0,0,0,0.52);
-}
-
-/* Short screens: shrink logo & support, and slightly reduce gaps (still no overlap) */
-@media (max-height: 720px){
-  :root{
-    --logo-w: clamp(240px, 46vw, 450px);
-    --support: clamp(12px, 1.25vw, 16px);
-    --meta: clamp(11px, 1.0vw, 12px);
-    --gap-1: clamp(10px, 1.8vh, 20px);
-    --gap-2: clamp(18px, 2.8vh, 34px);
-    --gap-3: clamp(10px, 1.8vh, 20px);
-    --pad-top: 8px;
-    --pad-bot: 8px;
-  }
-}
-@media (max-height: 640px){
-  :root{
-    --logo-w: clamp(210px, 42vw, 400px);
-    --gap-2: clamp(14px, 2.2vh, 26px);
-  }
 }

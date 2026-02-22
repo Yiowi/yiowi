@@ -1,6 +1,15 @@
 (() => {
-  const show = () => { document.documentElement.style.visibility = 'visible'; };
   const root = document.documentElement;
+  const show = () => { root.style.visibility = 'visible'; };
+
+  // Stop "Install app" behavior: unregister any existing service workers (if one was added before)
+  try {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then((regs) => regs.forEach((r) => r.unregister()))
+        .catch(() => {});
+    }
+  } catch (_) {}
 
   const setSplit = (percent) => {
     if (!Number.isFinite(percent)) return;
@@ -8,83 +17,76 @@
     root.style.setProperty('--split-x', p.toFixed(4) + '%');
   };
 
-  const rgbToHsv = (r,g,b) => {
-    r/=255; g/=255; b/=255;
-    const max=Math.max(r,g,b), min=Math.min(r,g,b);
-    const d=max-min;
-    let h=0;
-    if (d !== 0){
-      switch(max){
-        case r: h=((g-b)/d + (g<b?6:0)); break;
-        case g: h=((b-r)/d + 2); break;
-        case b: h=((r-g)/d + 4); break;
-      }
-      h *= 60;
-    }
-    const s = max === 0 ? 0 : d/max;
-    const v = max;
-    return [h,s,v];
+  const mountLogo = async () => {
+    const mount = document.getElementById('logoMount');
+    if (!mount) return null;
+
+    const res = await fetch('/assets/logo.svg', { cache: 'force-cache' });
+    const svgText = await res.text();
+
+    mount.innerHTML = svgText;
+
+    // Make sure we have an <svg>
+    const svg = mount.querySelector('svg');
+    if (!svg) return null;
+
+    // Remove fixed width/height attributes so CSS controls sizing
+    svg.removeAttribute('width');
+    svg.removeAttribute('height');
+
+    // Accessibility
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Yiowi — Hybrid Intelligence Studio');
+
+    return svg;
   };
 
-  const computeBlueCenterPercent = async (logo) => {
-    const src = logo.getAttribute('src');
-    const res = await fetch(src, { cache: 'force-cache' });
-    const blob = await res.blob();
+  const alignSplitToBlueDot = (svg) => {
+    if (!svg) return;
 
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = URL.createObjectURL(blob);
-    await img.decode().catch(() => new Promise((ok)=>{ img.onload=ok; img.onerror=ok; }));
+    // Find the "blue dot" by fill. Pick the largest blue-filled element.
+    const els = Array.from(svg.querySelectorAll('[fill]'));
+    const blueCandidates = els.filter((el) => {
+      const fill = (el.getAttribute('fill') || '').trim().toLowerCase();
+      return fill === '#00f' || fill === '#0000ff' || fill === 'blue' || fill.includes('rgb(0') && fill.includes('255');
+    });
 
-    const w = Math.max(1, img.naturalWidth || img.width);
-    const targetW = Math.min(900, w);
-    const scale = targetW / w;
-    const cw = Math.max(1, Math.round(w * scale));
-    const ch = Math.max(1, Math.round((img.naturalHeight || img.height) * scale));
+    if (!blueCandidates.length) return;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = cw; canvas.height = ch;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(img, 0, 0, cw, ch);
-    URL.revokeObjectURL(img.src);
+    let best = blueCandidates[0];
+    let bestArea = 0;
 
-    const data = ctx.getImageData(0,0,cw,ch).data;
-
-    let sumX = 0, sumW = 0;
-    const step = 2;
-    for (let y=0; y<ch; y+=step){
-      const row = y*cw*4;
-      for (let x=0; x<cw; x+=step){
-        const i = row + x*4;
-        const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
-        if (a < 60) continue;
-        const [h,s,v] = rgbToHsv(r,g,b);
-        if (h >= 205 && h <= 255 && s >= 0.30 && v >= 0.22){
-          const weight = (a/255) * s * v;
-          sumX += x * weight;
-          sumW += weight;
+    for (const el of blueCandidates) {
+      try {
+        const r = el.getBoundingClientRect();
+        const area = r.width * r.height;
+        if (area > bestArea) {
+          bestArea = area;
+          best = el;
         }
-      }
+      } catch (_) {}
     }
-    if (sumW < 5) return null;
 
-    const avgX = sumX / sumW;
+    const rect = best.getBoundingClientRect();
+    if (!rect.width) return;
 
-    const rect = logo.getBoundingClientRect();
-    const centerXViewport = rect.left + rect.width * (avgX / cw);
-    return (centerXViewport / window.innerWidth) * 100;
+    const centerX = rect.left + rect.width / 2;
+    const percent = (centerX / window.innerWidth) * 100;
+    setSplit(percent);
   };
 
   const init = async () => {
     try{
+      // 1) mount svg
+      const svg = await mountLogo();
+
+      // 2) wait a frame so layout is final
       await new Promise(requestAnimationFrame);
-      const logo = document.getElementById('yiowiLogo');
-      if (!logo) return;
-      if (!logo.complete) {
-        await new Promise((ok)=>{ logo.addEventListener('load', ok, {once:true}); logo.addEventListener('error', ok, {once:true}); });
-      }
-      const p = await computeBlueCenterPercent(logo);
-      if (p != null) setSplit(p);
+
+      // 3) align split
+      alignSplitToBlueDot(svg);
+    } catch (_) {
+      // fallback to 50%
     } finally {
       show();
     }
@@ -92,12 +94,18 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init, { once:true });
-  } else init();
+  } else {
+    init();
+  }
 
-  // keep aligned on resize
+  // Keep aligned on resize
   let t;
   window.addEventListener('resize', () => {
     clearTimeout(t);
-    t = setTimeout(init, 180);
+    t = setTimeout(() => {
+      const mount = document.getElementById('logoMount');
+      const svg = mount ? mount.querySelector('svg') : null;
+      alignSplitToBlueDot(svg);
+    }, 120);
   }, { passive:true });
 })();

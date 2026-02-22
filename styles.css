@@ -4,23 +4,22 @@
   --black:#000;
   --blue:#00f;
 
+  /* set by JS to align to dot center */
   --split-x: 50%;
 
-  /* No-scroll fullscreen */
+  /* Fullscreen, no scroll */
   --pad-x: 14px;
-  --pad-top: 12px;
-  --pad-bot: 12px;
+  --pad-y: 10px;
 
-  /* Sizes (balanced) */
-  --logo-w: clamp(300px, 56vw, 560px);
+  /* Sizing */
+  --logo-w: clamp(280px, 52vw, 560px);
+
   --title: clamp(18px, 2.35vw, 36px);
   --support: clamp(14px, 1.55vw, 21px);
-  --meta: clamp(12px, 1.15vw, 14px);
+  --meta: clamp(12px, 1.10vw, 14px);
 
-  /* Key fix: force a *minimum* separation between story and CTA */
-  --gap-top: clamp(18px, 3.4vh, 56px);   /* logo -> story */
-  --gap-mid: clamp(36px, 5.0vh, 84px);   /* story -> cta (bigger so CTA never touches bridge) */
-  --gap-bot: clamp(18px, 3.2vh, 52px);   /* cta -> footer */
+  /* Space between the 4 areas (evenly distributed by flex) */
+  --stack-gap: clamp(18px, 3.0vh, 44px);
 }
 
 *{box-sizing:border-box}
@@ -34,34 +33,42 @@ body{
     var(--left) 0 var(--split-x),
     var(--right) var(--split-x) 100%
   );
-  overflow:hidden; /* requirement: no scroll */
+  overflow:hidden;
 }
 
+/* Use modern flex stack with space-evenly so top space isn't wasted
+   and the CTA can’t collide with the story. */
 .hero{
   height:100dvh;
   padding:
-    calc(env(safe-area-inset-top) + var(--pad-top))
+    calc(env(safe-area-inset-top) + var(--pad-y))
     var(--pad-x)
-    calc(env(safe-area-inset-bottom) + var(--pad-bot));
-  display:grid;
+    calc(env(safe-area-inset-bottom) + var(--pad-y));
 
-  /* 4 blocks with 3 controlled spacers */
-  grid-template-rows:
-    auto
-    minmax(var(--gap-top), 1fr)
-    auto
-    minmax(var(--gap-mid), 1fr)
-    auto
-    minmax(var(--gap-bot), 1fr)
-    auto;
-
-  justify-items:center;
+  display:flex;
+  flex-direction:column;
   align-items:center;
+
+  /* Evenly distributed space around items */
+  justify-content:space-evenly;
+  gap: var(--stack-gap);
+
   text-align:center;
   min-width:0;
 }
 
-.logo{ width:var(--logo-w); height:auto; }
+.logo{
+  width:var(--logo-w);
+  height:auto;
+  display:block;
+}
+
+/* Ensure inline SVG scales like an image */
+.logo svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
 
 /* STORY */
 .tc{
@@ -69,7 +76,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: clamp(12px, 2.2vh, 22px);
+  gap: clamp(12px, 2.0vh, 20px);
 }
 
 .tc__grid{
@@ -83,10 +90,17 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding: clamp(6px, 1.2vh, 12px) clamp(10px, 2.8vw, 24px);
+  padding: clamp(6px, 1.1vh, 12px) clamp(10px, 2.6vw, 22px);
 }
 
-.tc__inner{ width:100%; max-width:340px; }
+.tc__inner{
+  width:100%;
+  max-width:340px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
 
 .tc__title{
   font-weight:700;
@@ -164,27 +178,23 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Tight heights: reduce logo + text before anything overlaps; also reduce gaps a bit but keep mid gap bigger */
+/* Short heights: shrink *content* rather than colliding.
+   (Still no scroll; space-evenly still distributes) */
 @media (max-height: 760px){
   :root{
-    --logo-w: clamp(260px, 50vw, 500px);
+    --logo-w: clamp(240px, 46vw, 500px);
     --support: clamp(12px, 1.25vw, 18px);
     --meta: clamp(11px, 1.0vw, 12px);
-
-    --gap-top: clamp(14px, 2.6vh, 36px);
-    --gap-mid: clamp(28px, 3.8vh, 60px);
-    --gap-bot: clamp(14px, 2.4vh, 34px);
-
-    --pad-top: 8px;
-    --pad-bot: 8px;
+    --stack-gap: clamp(12px, 2.0vh, 26px);
+    --pad-y: 8px;
   }
+  .tc{ gap: 12px; }
+  .tc__sub{ margin-top:8px; }
 }
 
 @media (max-height: 680px){
   :root{
-    --logo-w: clamp(230px, 46vw, 460px);
-    --gap-mid: clamp(22px, 3.2vh, 48px);
+    --logo-w: clamp(220px, 42vw, 460px);
+    --stack-gap: clamp(10px, 1.6vh, 22px);
   }
-  .tc{ gap: 12px; }
-  .tc__sub{ margin-top:8px; }
 }

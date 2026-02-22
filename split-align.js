@@ -1,6 +1,8 @@
 (() => {
+  // Goal: set --split-x BEFORE showing the page (no visible jump)
+  const show = () => { document.documentElement.style.visibility = 'visible'; };
+
   const logo = document.getElementById('yiowiLogo');
-  if (!logo) return;
 
   const setSplit = (percent) => {
     if (!Number.isFinite(percent)) return;
@@ -9,7 +11,7 @@
   };
 
   const findBlueCenterX = async () => {
-    const src = logo.getAttribute('src');
+    const src = logo ? logo.getAttribute('src') : '/assets/logo.svg';
     const res = await fetch(src, { cache: 'force-cache' });
     const blob = await res.blob();
 
@@ -38,6 +40,8 @@
 
     let sumX = 0;
     let count = 0;
+
+    // blue-ish pixel: b high, r/g low (tolerant to anti-aliasing)
     const step = 2;
     for (let y = 0; y < ch; y += step) {
       const row = y * cw * 4;
@@ -51,30 +55,54 @@
         }
       }
     }
-    if (count < 50) return null;
+    if (count < 40) return null;
+
     const avgX = sumX / count;
 
+    // Need rendered logo rect to map to viewport.
     const rect = logo.getBoundingClientRect();
     const centerXViewport = rect.left + rect.width * (avgX / cw);
     return (centerXViewport / window.innerWidth) * 100;
   };
 
-  const run = async () => {
+  const alignAndShow = async () => {
     try {
-      const rect = logo.getBoundingClientRect();
-      if (!rect.width) return;
+      // Wait 1 frame so layout is computed (still hidden)
+      await new Promise(requestAnimationFrame);
+      if (!logo || !logo.getBoundingClientRect().width) { show(); return; }
+
+      // Ensure logo is loaded before measurement
+      if (!logo.complete) {
+        await new Promise((ok) => { logo.addEventListener('load', ok, { once:true }); logo.addEventListener('error', ok, { once:true }); });
+      }
+
       const percent = await findBlueCenterX();
-      if (percent == null) return;
-      setSplit(percent);
-    } catch (_) {}
+      if (percent != null) setSplit(percent);
+    } catch (_) {
+      // ignore
+    } finally {
+      show();
+    }
   };
 
+  // Run immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', alignAndShow, { once:true });
+  } else {
+    alignAndShow();
+  }
+
+  // Keep aligned on resize (no hide/show)
   let t;
-  const debounce = () => { clearTimeout(t); t = setTimeout(run, 120); };
-
-  if (logo.complete) debounce();
-  else logo.addEventListener('load', debounce);
-
-  window.addEventListener('resize', debounce, { passive: true });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(debounce).catch(() => {});
+  const onResize = () => {
+    clearTimeout(t);
+    t = setTimeout(async () => {
+      try {
+        if (!logo || !logo.getBoundingClientRect().width) return;
+        const percent = await findBlueCenterX();
+        if (percent != null) setSplit(percent);
+      } catch(_) {}
+    }, 150);
+  };
+  window.addEventListener('resize', onResize, { passive: true });
 })();

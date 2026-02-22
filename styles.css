@@ -6,12 +6,11 @@
 
   --split-x: 50%;
 
-  /* Keep full-screen with NO scroll, but avoid squashing bottom */
+  /* Balanced sizing */
   --pad-x: 14px;
   --pad-top: 12px;
   --pad-bot: 12px;
 
-  /* Balanced sizing */
   --logo-w: clamp(280px, 54vw, 520px);
   --title: clamp(18px, 2.2vw, 34px);
   --support: clamp(14px, 1.5vw, 20px);
@@ -43,7 +42,6 @@ body{
     calc(env(safe-area-inset-bottom) + var(--pad-bot));
   display:grid;
 
-  /* 4 blocks + 3 equal flexible spacers with a *real* minimum */
   grid-template-rows:
     auto
     minmax(var(--gap), 1fr)
@@ -155,7 +153,7 @@ body{
   flex-direction:column;
   gap:8px;
   align-items:center;
-  padding-bottom: 2px; /* prevents visual clipping when tight */
+  padding-bottom: 2px;
 }
 
 .contact{ font-size:var(--meta); }
@@ -171,20 +169,24 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Very short heights: shrink logo first, then reduce gaps slightly (still no scroll) */
+/* Guard rails for short screens: reduce sizes before overlap happens */
 @media (max-height: 720px){
   :root{
     --logo-w: clamp(250px, 48vw, 460px);
     --gap: clamp(10px, 1.8vh, 22px);
     --pad-top: 8px;
     --pad-bot: 8px;
+    --support: clamp(13px, 1.35vw, 18px);
   }
   .tc{ gap: 10px; }
 }
-@media (max-height: 620px){
+
+@media (max-height: 640px){
   :root{
     --logo-w: clamp(220px, 44vw, 420px);
     --gap: clamp(8px, 1.4vh, 16px);
+    --support: clamp(12px, 1.2vw, 16px);
+    --meta: clamp(11px, 1.0vw, 12px);
   }
-  .tc__sub{ margin-top:6px; }
+  .cta{ padding: 10px 16px; }
 }

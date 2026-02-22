@@ -6,18 +6,21 @@
 
   --split-x: 50%;
 
-  /* Balanced sizing */
+  /* No-scroll fullscreen */
   --pad-x: 14px;
   --pad-top: 12px;
   --pad-bot: 12px;
 
+  /* Sizing */
   --logo-w: clamp(280px, 54vw, 520px);
   --title: clamp(18px, 2.2vw, 34px);
   --support: clamp(14px, 1.5vw, 20px);
   --meta: clamp(12px, 1.1vw, 14px);
 
-  /* Minimum equal gaps between the 4 areas */
-  --gap: clamp(14px, 2.4vh, 34px);
+  /* 3 gaps (make story->CTA bigger to avoid overlap) */
+  --gap-1: clamp(14px, 2.4vh, 32px); /* logo -> story */
+  --gap-2: clamp(24px, 3.6vh, 48px); /* story -> cta */
+  --gap-3: clamp(14px, 2.4vh, 32px); /* cta -> footer */
 }
 
 *{box-sizing:border-box}
@@ -31,7 +34,7 @@ body{
     var(--left) 0 var(--split-x),
     var(--right) var(--split-x) 100%
   );
-  overflow:hidden; /* requirement: no scroll */
+  overflow:hidden;
 }
 
 .hero{
@@ -44,11 +47,11 @@ body{
 
   grid-template-rows:
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-1), 1fr)
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-2), 1fr)
     auto
-    minmax(var(--gap), 1fr)
+    minmax(var(--gap-3), 1fr)
     auto;
 
   justify-items:center;
@@ -57,10 +60,7 @@ body{
   min-width:0;
 }
 
-.logo{
-  width:var(--logo-w);
-  height:auto;
-}
+.logo{ width:var(--logo-w); height:auto; }
 
 /* STORY */
 .tc{
@@ -110,13 +110,10 @@ body{
   flex-direction:column;
   align-items:center;
   gap:10px;
+  padding-bottom: 2px;
 }
 
-.tc__line{
-  width:64px;
-  height:2px;
-  background:rgba(0,0,0,0.85);
-}
+.tc__line{ width:64px; height:2px; background:rgba(0,0,0,0.85); }
 
 .tc__bridgeText{
   font-weight:400;
@@ -136,8 +133,8 @@ body{
   background:var(--black);
   color:rgba(255,255,255,0.95);
   box-shadow:0 16px 48px rgba(0,0,0,0.26);
+  flex-shrink:0;
 }
-
 .cta__text{ font-weight:700; letter-spacing:.14em; font-size:clamp(12px, 1.0vw, 14px); }
 .cta__dot{
   width:clamp(12px, 1.1vw, 14px);
@@ -153,7 +150,6 @@ body{
   flex-direction:column;
   gap:8px;
   align-items:center;
-  padding-bottom: 2px;
 }
 
 .contact{ font-size:var(--meta); }
@@ -169,24 +165,22 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Guard rails for short screens: reduce sizes before overlap happens */
+/* Short screens: shrink logo & support, and slightly reduce gaps (still no overlap) */
 @media (max-height: 720px){
   :root{
-    --logo-w: clamp(250px, 48vw, 460px);
-    --gap: clamp(10px, 1.8vh, 22px);
+    --logo-w: clamp(240px, 46vw, 450px);
+    --support: clamp(12px, 1.25vw, 16px);
+    --meta: clamp(11px, 1.0vw, 12px);
+    --gap-1: clamp(10px, 1.8vh, 20px);
+    --gap-2: clamp(18px, 2.8vh, 34px);
+    --gap-3: clamp(10px, 1.8vh, 20px);
     --pad-top: 8px;
     --pad-bot: 8px;
-    --support: clamp(13px, 1.35vw, 18px);
   }
-  .tc{ gap: 10px; }
 }
-
 @media (max-height: 640px){
   :root{
-    --logo-w: clamp(220px, 44vw, 420px);
-    --gap: clamp(8px, 1.4vh, 16px);
-    --support: clamp(12px, 1.2vw, 16px);
-    --meta: clamp(11px, 1.0vw, 12px);
+    --logo-w: clamp(210px, 42vw, 400px);
+    --gap-2: clamp(14px, 2.2vh, 26px);
   }
-  .cta{ padding: 10px 16px; }
 }

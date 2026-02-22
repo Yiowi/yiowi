@@ -2,7 +2,7 @@
   const root = document.documentElement;
   const show = () => { root.style.visibility = 'visible'; };
 
-  // Stop "Install app" behavior: unregister any existing service workers (if one was added before)
+  // Ensure no leftover PWA behavior
   try {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations()
@@ -17,76 +17,90 @@
     root.style.setProperty('--split-x', p.toFixed(4) + '%');
   };
 
+  const waitFonts = async () => {
+    // Wait for font layout so logo/story spacing doesn't change after we align the split
+    try {
+      if (document.fonts && document.fonts.ready) {
+        // race with 700ms timeout so we never hang
+        await Promise.race([
+          document.fonts.ready,
+          new Promise((ok) => setTimeout(ok, 700))
+        ]);
+      } else {
+        await new Promise((ok) => setTimeout(ok, 120));
+      }
+    } catch (_) {}
+  };
+
   const mountLogo = async () => {
     const mount = document.getElementById('logoMount');
     if (!mount) return null;
 
     const res = await fetch('/assets/logo.svg', { cache: 'force-cache' });
     const svgText = await res.text();
-
     mount.innerHTML = svgText;
 
-    // Make sure we have an <svg>
     const svg = mount.querySelector('svg');
     if (!svg) return null;
 
-    // Remove fixed width/height attributes so CSS controls sizing
     svg.removeAttribute('width');
     svg.removeAttribute('height');
-
-    // Accessibility
     svg.setAttribute('role', 'img');
     svg.setAttribute('aria-label', 'Yiowi — Hybrid Intelligence Studio');
-
     return svg;
   };
 
-  const alignSplitToBlueDot = (svg) => {
-    if (!svg) return;
+  const pickBlueDot = (svg) => {
+    if (!svg) return null;
 
-    // Find the "blue dot" by fill. Pick the largest blue-filled element.
+    // Prefer circles first (most likely the dot)
+    const circles = Array.from(svg.querySelectorAll('circle[fill]'));
+    const isBlue = (fill) => {
+      const f = (fill || '').trim().toLowerCase();
+      return f === '#00f' || f === '#0000ff' || f === 'blue' || f === 'rgb(0,0,255)';
+    };
+    const blueCircles = circles.filter((c) => isBlue(c.getAttribute('fill')));
+    if (blueCircles.length) return blueCircles.sort((a,b) => (b.r?.baseVal?.value||0) - (a.r?.baseVal?.value||0))[0];
+
+    // Fallback: any element with blue fill, choose largest area
     const els = Array.from(svg.querySelectorAll('[fill]'));
-    const blueCandidates = els.filter((el) => {
-      const fill = (el.getAttribute('fill') || '').trim().toLowerCase();
-      return fill === '#00f' || fill === '#0000ff' || fill === 'blue' || fill.includes('rgb(0') && fill.includes('255');
-    });
+    const blue = els.filter((el) => isBlue(el.getAttribute('fill')));
+    if (!blue.length) return null;
 
-    if (!blueCandidates.length) return;
-
-    let best = blueCandidates[0];
-    let bestArea = 0;
-
-    for (const el of blueCandidates) {
+    let best = blue[0], bestArea = 0;
+    for (const el of blue) {
       try {
         const r = el.getBoundingClientRect();
         const area = r.width * r.height;
-        if (area > bestArea) {
-          bestArea = area;
-          best = el;
-        }
+        if (area > bestArea) { bestArea = area; best = el; }
       } catch (_) {}
     }
+    return best;
+  };
 
-    const rect = best.getBoundingClientRect();
-    if (!rect.width) return;
+  const alignSplitToDot = (svg) => {
+    const dot = pickBlueDot(svg);
+    if (!dot) return;
 
-    const centerX = rect.left + rect.width / 2;
-    const percent = (centerX / window.innerWidth) * 100;
-    setSplit(percent);
+    const r = dot.getBoundingClientRect();
+    if (!r.width) return;
+
+    const centerX = r.left + r.width / 2;
+    setSplit((centerX / window.innerWidth) * 100);
   };
 
   const init = async () => {
-    try{
-      // 1) mount svg
+    try {
+      await waitFonts();
       const svg = await mountLogo();
 
-      // 2) wait a frame so layout is final
+      // Wait two frames so flex layout is stable
+      await new Promise(requestAnimationFrame);
       await new Promise(requestAnimationFrame);
 
-      // 3) align split
-      alignSplitToBlueDot(svg);
+      alignSplitToDot(svg);
     } catch (_) {
-      // fallback to 50%
+      // keep default
     } finally {
       show();
     }
@@ -98,14 +112,13 @@
     init();
   }
 
-  // Keep aligned on resize
   let t;
   window.addEventListener('resize', () => {
     clearTimeout(t);
     t = setTimeout(() => {
       const mount = document.getElementById('logoMount');
       const svg = mount ? mount.querySelector('svg') : null;
-      alignSplitToBlueDot(svg);
+      alignSplitToDot(svg);
     }, 120);
   }, { passive:true });
 })();

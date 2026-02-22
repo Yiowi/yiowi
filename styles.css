@@ -18,8 +18,11 @@
   --support: clamp(14px, 1.55vw, 21px);
   --meta: clamp(12px, 1.10vw, 14px);
 
-  /* Space between the 4 areas (evenly distributed by flex) */
-  --stack-gap: clamp(18px, 3.0vh, 44px);
+  /* Base spacing */
+  --stack-gap: clamp(16px, 2.6vh, 38px);
+
+  /* Extra separation between story and CTA (your request) */
+  --story-cta-gap: clamp(20px, 3.8vh, 60px);
 }
 
 *{box-sizing:border-box}
@@ -36,8 +39,7 @@ body{
   overflow:hidden;
 }
 
-/* Use modern flex stack with space-evenly so top space isn't wasted
-   and the CTA can’t collide with the story. */
+/* Flex stack with distributed space */
 .hero{
   height:100dvh;
   padding:
@@ -48,11 +50,9 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-
-  /* Evenly distributed space around items */
   justify-content:space-evenly;
-  gap: var(--stack-gap);
 
+  gap: var(--stack-gap);
   text-align:center;
   min-width:0;
 }
@@ -62,8 +62,6 @@ body{
   height:auto;
   display:block;
 }
-
-/* Ensure inline SVG scales like an image */
 .logo svg{
   width:100%;
   height:auto;
@@ -136,7 +134,9 @@ body{
   color:rgba(0,0,0,0.72);
 }
 
-/* CTA */
+/* CTA — add extra top margin to separate from story */
+.hero__cta{ margin-top: var(--story-cta-gap); }
+
 .cta{
   display:inline-flex;
   align-items:center;
@@ -178,14 +178,14 @@ body{
   color:rgba(0,0,0,0.52);
 }
 
-/* Short heights: shrink *content* rather than colliding.
-   (Still no scroll; space-evenly still distributes) */
+/* Short heights: shrink to prevent collisions while keeping requested separation */
 @media (max-height: 760px){
   :root{
     --logo-w: clamp(240px, 46vw, 500px);
     --support: clamp(12px, 1.25vw, 18px);
     --meta: clamp(11px, 1.0vw, 12px);
-    --stack-gap: clamp(12px, 2.0vh, 26px);
+    --stack-gap: clamp(10px, 1.8vh, 22px);
+    --story-cta-gap: clamp(14px, 2.6vh, 32px);
     --pad-y: 8px;
   }
   .tc{ gap: 12px; }
@@ -195,6 +195,7 @@ body{
 @media (max-height: 680px){
   :root{
     --logo-w: clamp(220px, 42vw, 460px);
-    --stack-gap: clamp(10px, 1.6vh, 22px);
+    --stack-gap: clamp(8px, 1.4vh, 18px);
+    --story-cta-gap: clamp(10px, 2.0vh, 24px);
   }
 }

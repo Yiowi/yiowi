@@ -5,30 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Yiowi — Hybrid Intelligence Studio</title>
 
-  <!-- Prevent any visible split jump (we reveal after fonts+logo+split are ready) -->
-  <style>html{visibility:hidden}</style>
-
   <link rel="icon" href="/assets/favicon.ico" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-  <!-- Manifest removed to stop Chrome "Install app" -->
-  <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+  <!-- Manifest intentionally omitted to avoid Chrome "Install app" -->
 
   <link rel="stylesheet" href="/styles.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
-
-  <script src="/split-align.js"></script>
 </head>
 
 <body>
   <main class="hero" aria-label="Yiowi">
+    <!-- 1) Logo -->
     <header class="hero__logo" aria-label="Brand">
-      <!-- Inline-mount the SVG so we can get exact dot center -->
-      <div id="logoMount" class="logo" aria-label="Yiowi — Hybrid Intelligence Studio"></div>
+      <img class="logo" src="/assets/logo.svg" alt="Yiowi — Hybrid Intelligence Studio" />
     </header>
 
+    <!-- 2) Story -->
     <section class="hero__story tc" aria-label="Technology and Creativity">
       <div class="tc__grid" role="presentation">
         <div class="tc__half">
@@ -37,7 +32,6 @@
             <div class="tc__sub">builds the<br />structure.</div>
           </div>
         </div>
-
         <div class="tc__half">
           <div class="tc__inner">
             <div class="tc__title">CREATIVITY</div>
@@ -52,6 +46,7 @@
       </div>
     </section>
 
+    <!-- 3) CTA -->
     <section class="hero__cta" aria-label="Start">
       <a class="cta" href="https://wa.me/35799776169" target="_blank" rel="noopener">
         <span class="cta__text">START HERE</span>
@@ -59,10 +54,9 @@
       </a>
     </section>
 
+    <!-- 4) Footer -->
     <footer class="hero__meta" aria-label="Contact">
-      <div class="contact">
-        <a href="mailto:yo@yiowi.com">yo@yiowi.com</a>
-      </div>
+      <div class="contact"><a href="mailto:yo@yiowi.com">yo@yiowi.com</a></div>
       <div class="micro">Limassol, Cyprus — operating globally.</div>
     </footer>
   </main>

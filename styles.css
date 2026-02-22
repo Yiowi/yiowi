@@ -3,7 +3,14 @@
   --right:#f2b549;
   --black:#000;
   --blue:#00f;
+
   --gap-min: clamp(16px, 3vh, 48px);
+
+  /* unified small text size (Builds/Shapes, Separate/Combined, Footer) */
+  --support-text: clamp(16px, 1.9vw, 24px);
+
+  /* background split x position (set by split-align.js). fallback is 50% */
+  --split-x: 50%;
 }
 
 *{box-sizing:border-box}
@@ -12,8 +19,12 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-  background:linear-gradient(90deg,var(--left) 0 50%,var(--right) 50% 100%);
   color:#000;
+  background:
+    linear-gradient(90deg,
+      var(--left) 0 var(--split-x),
+      var(--right) var(--split-x) 100%
+    );
 }
 
 .hero{
@@ -39,13 +50,20 @@ body{
 .hero__logo{ grid-row:1; }
 .hero__story{ grid-row:3; width:min(920px, 96vw); }
 .hero__cta{ grid-row:5; }
-.hero__meta{ grid-row:7; display:flex; flex-direction:column; gap:10px; align-items:center; }
+.hero__meta{
+  grid-row:7;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
+}
 
 .logo{
   width:min(560px, 88vw);
   height:auto;
 }
 
+/* --- Story block --- */
 .tc{
   display:flex;
   flex-direction:column;
@@ -81,8 +99,8 @@ body{
 .tc__sub{
   margin-top:10px;
   font-weight:400;
-  line-height:1.32;
-  font-size:clamp(13px, 1.6vw, 20px);
+  line-height:1.28;
+  font-size:var(--support-text);
   color:rgba(0,0,0,0.72);
   overflow-wrap:anywhere;
 }
@@ -103,10 +121,11 @@ body{
 .tc__bridgeText{
   font-weight:400;
   line-height:1.28;
-  font-size:clamp(16px, 1.9vw, 24px);
+  font-size:var(--support-text);
   color:rgba(0,0,0,0.72);
 }
 
+/* --- CTA --- */
 .cta{
   display:inline-flex;
   align-items:center;
@@ -131,7 +150,8 @@ body{
   box-shadow:0 0 0 1px rgba(255,255,255,0.12), 0 10px 30px rgba(0,0,255,0.28);
 }
 
-.contact{ font-size:clamp(12px, 1.1vw, 14px); }
+/* Footer email/location same size */
+.contact{ font-size:var(--support-text); }
 .contact a{
   color:rgba(0,0,0,0.78);
   text-decoration:none;
@@ -141,8 +161,8 @@ body{
 .contact a:hover{ border-color:rgba(0,0,0,0.55); }
 
 .micro{
-  font-size:clamp(11px, 0.95vw, 12.5px);
-  letter-spacing:.06em;
+  font-size:var(--support-text);
+  letter-spacing:.02em;
   color:rgba(0,0,0,0.52);
 }
 

@@ -168,25 +168,47 @@ body{
     gap:clamp(12px,2.2vh,20px);
   }
 
+  /* Long, tracked headings can look visually "off" on narrow screens.
+     Slightly reduce size/letter-spacing so each label stays centered and readable. */
+  .story__title{
+    font-size: clamp(20px, 6vw, 30px);
+    letter-spacing: 0.14em;
+  }
+
   .hero__story{ height:auto; }
 
   .story{
     position: static;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap: clamp(14px,2.2vh,22px);
+    /* Mobile: keep the left/right color split meaningful.
+       Place TECHNOLOGY in the left half and CREATIVITY in the right half,
+       stacked vertically for better reading flow. */
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: clamp(16px, 3vh, 26px);
+    column-gap: 0;
+    align-items:start;
   }
   .story__block{
     position: static;
     transform: none;
-    width: min(520px, 92vw);
+    width:100%;
     text-align:center;
   }
   .story__block--left,
   .story__block--right{
     left:auto;
     right:auto;
+  }
+
+  .story__block--left{
+    grid-column: 1;
+    grid-row: 1;
+    padding-right: clamp(6px, 2vw, 14px);
+  }
+  .story__block--right{
+    grid-column: 2;
+    grid-row: 2;
+    padding-left: clamp(6px, 2vw, 14px);
   }
 }
 

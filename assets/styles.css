@@ -1,0 +1,229 @@
+:root{
+  --left:#96cff1;
+  --right:#f2b549;
+  --split-x: 50%;
+
+  --black:#000;
+  --blue:#00f;
+
+  /* spacing scale */
+  --s: 16px;
+  --m: 24px;
+  --l: 40px;
+  --xl: 64px;
+
+  --pad-x: 14px;
+  --pad-y: 12px;
+
+  /* Typography */
+  --title: clamp(18px, 2.35vw, 36px);
+  /* Unified size for:
+     - builds the structure.
+     - shapes the experience.
+     - Separate strengths. Combined advantage. */
+  --support: clamp(14px, 1.55vw, 21px);
+  --meta: clamp(11px, 1.05vw, 14px);
+
+  --logo-w: clamp(300px, 56vw, 640px);
+  --logo-maxh: 30vh;
+
+  --cta-pad-y: clamp(10px, 1.4vh, 14px);
+  --cta-pad-x: clamp(18px, 2.4vw, 26px);
+
+  /* how close the story blocks sit to the center split line (desktop) */
+  --story-pull: clamp(10px, 2.2vw, 34px);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+
+body{
+  margin:0;
+  font-family:"Manrope",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  color:#000;
+  background: linear-gradient(90deg,
+    var(--left) 0 var(--split-x),
+    var(--right) var(--split-x) 100%
+  );
+  overflow:hidden; /* no scroll */
+}
+
+.hero{
+  height:100dvh;
+  padding:
+    calc(env(safe-area-inset-top) + var(--pad-y))
+    var(--pad-x)
+    calc(env(safe-area-inset-bottom) + var(--pad-y));
+
+  display:grid;
+  grid-template-rows: 0.24fr 0.32fr 0.14fr 0.18fr 0.12fr;
+  align-items:center;
+  justify-items:center;
+  text-align:center;
+  min-width:0;
+}
+
+/* Logo */
+.hero__logo{ align-self:start; padding-top: var(--s); }
+.logo{
+  width: var(--logo-w);
+  max-width: 96vw;
+  max-height: var(--logo-maxh);
+  height:auto;
+  display:block;
+}
+
+/* Story */
+.tc{
+  width:min(980px, 98vw);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.tc__grid{
+  width:100%;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 2vw, 24px);
+  align-items:center;
+}
+
+.tc__half{
+  min-width:0;
+  display:flex;
+  justify-content:center;
+}
+
+.tc__inner{
+  width:100%;
+  max-width: 360px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* Pull the story blocks closer to the center split line on desktop */
+@media (min-width: 761px){
+  .tc__half--left  .tc__inner{ transform: translateX(var(--story-pull)); }
+  .tc__half--right .tc__inner{ transform: translateX(calc(-1 * var(--story-pull))); }
+}
+
+.tc__title{
+  font-weight:700;
+  text-transform:uppercase;
+  line-height:1.05;
+  font-size:var(--title);
+  letter-spacing:0.12em;
+  color:rgba(0,0,0,0.82);
+}
+
+.tc__sub{
+  margin-top: var(--s);
+  font-size: var(--support);
+  line-height: 1.22;
+  color:rgba(0,0,0,0.72);
+}
+
+/* Bridge */
+.hero__bridge{ padding-top: var(--l); padding-bottom: var(--l); }
+.bridge{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: var(--s);
+}
+.bridge__line{
+  width:64px;
+  height:2px;
+  background:rgba(0,0,0,0.85);
+}
+.bridge__text{
+  font-size: var(--support);
+  line-height: 1.22;
+  color: rgba(0,0,0,0.78);
+}
+
+/* CTA */
+.hero__cta{ padding-top: var(--xl); padding-bottom: var(--l); }
+.cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding: var(--cta-pad-y) var(--cta-pad-x);
+  border-radius:999px;
+  background:var(--black);
+  color:rgba(255,255,255,0.95);
+  text-decoration:none;
+  box-shadow:0 10px 34px rgba(0,0,0,0.20);
+}
+.cta__text{
+  font-weight:700;
+  letter-spacing:.14em;
+  font-size:clamp(12px,1.05vw,14px);
+}
+.cta__dot{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:var(--blue);
+}
+
+/* Footer */
+.hero__meta{
+  align-self:end;
+  padding-bottom: var(--s);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap: var(--s);
+}
+.contact{ font-size: var(--meta); }
+.contact a{
+  color:rgba(0,0,0,0.72);
+  text-decoration:none;
+  border-bottom:1px solid rgba(0,0,0,0.20);
+  padding-bottom:2px;
+}
+.micro{
+  font-size: var(--meta);
+  letter-spacing:.06em;
+  color:rgba(0,0,0,0.48);
+}
+
+/* Mobile: stack + keep EVERYTHING centered */
+@media (max-width:760px){
+  :root{
+    --logo-maxh: 26vh;
+    --title: clamp(18px, 6.2vw, 32px);
+    --support: clamp(14px, 4.2vw, 19px);
+  }
+
+  .tc{ width: min(720px, 92vw); }
+  .tc__grid{
+    grid-template-columns:1fr;
+    gap: clamp(14px, 2.8vh, 22px);
+  }
+
+  /* remove desktop pull */
+  .tc__inner{ transform:none !important; }
+
+  /* hard-center stacking blocks */
+  .tc__half{ justify-content:center; }
+  .tc__inner{ max-width: 420px; }
+}
+
+/* Short screens: ensure everything stays visible without crowding */
+@media (max-height:760px){
+  :root{
+    --pad-y: 8px;
+    --logo-maxh: 24vh;
+    --s: 12px;
+    --l: 28px;
+    --xl: 44px;
+    --meta: clamp(10px, 1.0vw, 12px);
+    --support: clamp(12px, 1.25vw, 18px);
+  }
+  .hero__bridge{ padding-top: var(--l); padding-bottom: var(--m); }
+  .hero__cta{ padding-top: var(--l); padding-bottom: var(--m); }
+}

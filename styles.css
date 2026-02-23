@@ -29,6 +29,9 @@
 
   --cta-pad-y: clamp(10px, 1.4vh, 14px);
   --cta-pad-x: clamp(18px, 2.4vw, 26px);
+
+  /* how close the story blocks sit to the center split line (desktop) */
+  --story-pull: clamp(10px, 2.2vw, 34px);
 }
 
 *{box-sizing:border-box}
@@ -42,7 +45,7 @@ body{
     var(--left) 0 var(--split-x),
     var(--right) var(--split-x) 100%
   );
-  overflow:hidden;
+  overflow:hidden; /* no scroll */
 }
 
 .hero{
@@ -81,15 +84,15 @@ body{
   width:100%;
   display:grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(10px, 2vw, 24px); /* closer to center split */
+  gap: clamp(10px, 2vw, 24px);
+  align-items:center;
 }
 
 .tc__half{
   min-width:0;
   display:flex;
+  justify-content:center;
 }
-.tc__half--left{ justify-content:flex-end; padding-right: clamp(4px, 1.2vw, 14px); }
-.tc__half--right{ justify-content:flex-start; padding-left:  clamp(4px, 1.2vw, 14px); }
 
 .tc__inner{
   width:100%;
@@ -97,6 +100,12 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
+}
+
+/* Pull the story blocks closer to the center split line on desktop */
+@media (min-width: 761px){
+  .tc__half--left  .tc__inner{ transform: translateX(var(--story-pull)); }
+  .tc__half--right .tc__inner{ transform: translateX(calc(-1 * var(--story-pull))); }
 }
 
 .tc__title{
@@ -139,6 +148,7 @@ body{
 .cta{
   display:inline-flex;
   align-items:center;
+  justify-content:center;
   gap:12px;
   padding: var(--cta-pad-y) var(--cta-pad-x);
   border-radius:999px;
@@ -181,25 +191,29 @@ body{
   color:rgba(0,0,0,0.48);
 }
 
-/* Mobile stack */
+/* Mobile: stack + keep EVERYTHING centered */
 @media (max-width:760px){
   :root{
     --logo-maxh: 26vh;
     --title: clamp(18px, 6.2vw, 32px);
     --support: clamp(14px, 4.2vw, 19px);
   }
+
+  .tc{ width: min(720px, 92vw); }
   .tc__grid{
     grid-template-columns:1fr;
     gap: clamp(14px, 2.8vh, 22px);
   }
-  .tc__half--left,
-  .tc__half--right{
-    justify-content:center;
-    padding:0;
-  }
+
+  /* remove desktop pull */
+  .tc__inner{ transform:none !important; }
+
+  /* hard-center stacking blocks */
+  .tc__half{ justify-content:center; }
+  .tc__inner{ max-width: 420px; }
 }
 
-/* Short screens */
+/* Short screens: ensure everything stays visible without crowding */
 @media (max-height:760px){
   :root{
     --pad-y: 8px;

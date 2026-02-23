@@ -60,12 +60,12 @@ body{
 .story__block--left{
   left:auto;
   right:calc(50% + var(--story-gap));
-  text-align:right;
+  text-align:center;
 }
 
 .story__block--right{
   left:calc(50% + var(--story-gap));
-  text-align:left;
+  text-align:center;
 }
 
 .story__title{
@@ -160,5 +160,30 @@ body{
   .story__block--left,
   .story__block--right{
     left:auto;
+    text-align:center;
+}
+}
+
+
+@media (max-width: 820px){
+  .story{
+    position: static;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 22px;
+    margin-top: 12px;
+  }
+  .story__block{
+    position: static;
+    transform: none;
+    width: min(520px, 92vw);
+    text-align:center;
+  }
+  .story__block--left,
+  .story__block--right{
+    left:auto;
+    right:auto;
   }
 }
+

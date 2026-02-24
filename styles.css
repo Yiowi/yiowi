@@ -215,3 +215,17 @@ body{
   .cta{ transform: scale(.96); }
 }
 
+
+
+body {
+
+background: linear-gradient(
+    90deg,
+    #87b6d6 0%,
+    #87b6d6 30%,
+    #d9caa0 50%,
+    #f0b44c 70%,
+    #f0b44c 100%
+);
+
+}

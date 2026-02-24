@@ -1,6 +1,7 @@
 :root{
   --blue:#96cff1;
   --yellow:#f2b549;
+  --blend:#c4c29d; /* mid tone for smooth split */
   --black:#000;
   --accent:#00f;
 
@@ -18,7 +19,13 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:"Manrope",system-ui,sans-serif;
-  background:linear-gradient(90deg,var(--blue) 0 50%,var(--yellow) 50% 100%);
+  background:linear-gradient(90deg,
+    var(--blue) 0%,
+    var(--blue) 40%,
+    var(--blend) 50%,
+    var(--yellow) 60%,
+    var(--yellow) 100%
+  );
   overflow:hidden;
 }
 

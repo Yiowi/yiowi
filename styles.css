@@ -210,19 +210,17 @@ body{
 }
 
 @media (min-width: 821px){
-
-  /* Pull both story blocks toward the exact center */
+  /* Stronger desktop-only repositioning (mobile rules unchanged) */
   .story__block--left{
-    margin-right: clamp(2px, 0.4vw, 10px);
+    margin-right: 0 !important;
+    transform: translateY(-50%) translateX(90px) !important; /* move toward center */
   }
-
   .story__block--right{
-    margin-left: clamp(2px, 0.4vw, 10px);
+    margin-left: 0 !important;
+    transform: translateY(-50%) translateX(-90px) !important; /* move toward center */
   }
 
-  /* Move story section much closer to logo */
   .hero__story{
-    margin-top: -clamp(60px, 8vh, 160px);
+    margin-top: -clamp(90px, 10vh, 220px) !important; /* move upward toward logo */
   }
-
 }

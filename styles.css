@@ -1,7 +1,6 @@
 :root{
   --blue:#96cff1;
   --yellow:#f2b549;
-  --blend:#c4c29d; /* mid tone for smooth split */
   --black:#000;
   --accent:#00f;
 
@@ -10,7 +9,7 @@
   --meta: clamp(11px,1vw,14px);
 
   /* tighter, but still responsive */
-  --story-gap: clamp(24px, 3.25vw, 55px);
+  --story-gap: clamp(16px, 2.4vw, 40px);
 }
 
 *{box-sizing:border-box}
@@ -19,7 +18,7 @@ html,body{height:100%}
 body{
   margin:0;
   font-family:"Manrope",system-ui,sans-serif;
-  background:linear-gradient(90deg,var(--blue) 0%,var(--blue) 30%,#d9caa0 50%,var(--yellow) 70%,var(--yellow) 100%);
+  background:linear-gradient(90deg,var(--blue) 0 50%,var(--yellow) 50% 100%);
   overflow:hidden;
 }
 
@@ -41,6 +40,8 @@ body{
 }
 
 /* Logo */
+.hero__logo{ margin-bottom: -clamp(6px, 1.2vh, 16px); }
+
 .logo{
   width:clamp(320px,55vw,640px);
   max-height:28vh;
@@ -51,7 +52,8 @@ body{
   position:relative;
   width:100%;
   max-width:1100px;
-  /* Stable “story band” height on desktop */
+    margin-top: -clamp(10px, 1.6vh, 22px);
+/* Stable “story band” height on desktop */
   height:clamp(150px, 22vh, 230px);
 }
 
